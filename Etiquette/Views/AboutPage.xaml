@@ -11,20 +11,36 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="25" MaxWidth="600">
 
             <StackPanel Spacing="10">
-                <Image Source="/Assets/StoreLogo.scale-200.png" Width="100" Height="100" HorizontalAlignment="Center"/>
-                <TextBlock Text="Etiquette" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Text="Gestion d'impression d'étiquettes" Style="{StaticResource BodyTextBlockStyle}" HorizontalAlignment="Center" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                <FontIcon Glyph="&#xE946;" FontSize="64" />
+
+                <TextBlock Text="Etiquette" 
+                           FontSize="28" FontWeight="SemiBold"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="Gestion d'impression d'étiquettes" 
+                           FontSize="14"
+                           HorizontalAlignment="Center" 
+                           Foreground="Gray"/>
             </StackPanel>
 
             <MenuFlyoutSeparator MaxWidth="200"/>
 
             <StackPanel Spacing="5">
-                <TextBlock Text="Développé par" Style="{StaticResource SubtitleTextBlockStyle}" FontSize="16" HorizontalAlignment="Center"/>
-                <TextBlock Text="DEHER Rémi" Style="{StaticResource BodyStrongTextBlockStyle}" FontSize="18" HorizontalAlignment="Center" Foreground="{ThemeResource SystemAccentColor}"/>
+                <TextBlock Text="Développé par" 
+                           FontSize="16" FontWeight="Normal"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="DEHER Rémi" 
+                           FontSize="18" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" 
+                           Foreground="#0078D7"/>
             </StackPanel>
 
             <StackPanel Spacing="5">
-                <TextBlock Text="Code source &amp; Contributions" Style="{StaticResource BodyStrongTextBlockStyle}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Code source &amp; Contributions" 
+                           FontSize="14" FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
                 <HyperlinkButton NavigateUri="https://github.com/remi-deher/etiquette" HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <FontIcon Glyph="&#xE90A;" FontFamily="Segoe MDL2 Assets"/>
@@ -34,13 +50,25 @@
             </StackPanel>
 
             <StackPanel Spacing="5" Margin="0,10,0,0">
-                <TextBlock Text="Licence" Style="{StaticResource BodyStrongTextBlockStyle}" HorizontalAlignment="Center"/>
-                <TextBlock Text="Ce projet est distribué sous la licence MIT." Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Foreground="Gray"/>
-                <TextBlock Text="© 2024 - Tous droits réservés" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Center" Foreground="Gray"/>
+                <TextBlock Text="Licence" 
+                           FontSize="14" FontWeight="Bold"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="Ce projet est distribué sous la licence MIT." 
+                           FontSize="12"
+                           HorizontalAlignment="Center" Foreground="Gray"/>
+
+                <TextBlock Text="© 2024 - Tous droits réservés" 
+                           FontSize="12"
+                           HorizontalAlignment="Center" Foreground="Gray"/>
             </StackPanel>
 
         </StackPanel>
 
-        <TextBlock Text="Version 1.0.0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="20" Foreground="{ThemeResource SystemControlPageTextBaseLowBrush}" FontSize="12"/>
+        <TextBlock Text="Version 2.0.0" 
+                   VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                   Margin="20" 
+                   Foreground="Silver" 
+                   FontSize="12"/>
     </Grid>
 </Page>

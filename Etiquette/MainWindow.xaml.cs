@@ -31,7 +31,6 @@ namespace Etiquette
             IpStatusText.Text = $"IP : {GetLocalIpAddress() ?? "N/A"}";
 
             // 2. Mise à jour du statut BDD
-            // On considère que c'est local si l'adresse est localhost ou 127.0.0.1
             bool isLocal = AppSettings.DbServer == "127.0.0.1" || AppSettings.DbServer.ToLower() == "localhost";
             DbStatusText.Text = isLocal ? "BDD : Locale" : $"BDD : Distante ({AppSettings.DbServer})";
 
@@ -83,11 +82,9 @@ namespace Etiquette
             }
             catch
             {
-                // Fallback si on ne peut pas lister les imprimantes
                 PrinterListMenu.Items.Add(new MenuFlyoutItem { Text = "Liste indisponible", IsEnabled = false });
             }
 
-            // Option pour désélectionner ou séparateur
             if (PrinterListMenu.Items.Count > 0)
                 PrinterListMenu.Items.Add(new MenuFlyoutSeparator());
 
@@ -100,16 +97,12 @@ namespace Etiquette
 
             windowsSettingsItem.Click += async (s, e) =>
             {
-                // Ouvre la page "Imprimantes et scanneurs" des paramètres Windows
                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:printers"));
             };
 
             PrinterListMenu.Items.Add(windowsSettingsItem);
         }
 
-        /// <summary>
-        /// Récupère l'adresse IPv4 locale du poste
-        /// </summary>
         private string GetLocalIpAddress()
         {
             try
@@ -158,6 +151,7 @@ namespace Etiquette
             NavView.IsPaneVisible = false;
             NavView.IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 
+            // Masque le bouton Paramètres pendant le Wizard
             if (NavView.SettingsItem is NavigationViewItem settingsItem)
             {
                 settingsItem.Visibility = Visibility.Collapsed;
@@ -170,6 +164,7 @@ namespace Etiquette
         {
             NavView.IsPaneVisible = true;
 
+            // Réaffiche le bouton Paramètres
             if (NavView.SettingsItem is NavigationViewItem settingsItem)
             {
                 settingsItem.Visibility = Visibility.Visible;
@@ -178,12 +173,12 @@ namespace Etiquette
             NavView.SelectedItem = NavView.MenuItems[0];
             ContentFrame.Navigate(typeof(DashboardPage));
 
-            // Mettre à jour la status bar car l'utilisateur a pu changer la config dans le Wizard
             UpdateStatusBar();
         }
 
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
+            // Gestion du clic sur le bouton Paramètres natif
             if (args.IsSettingsInvoked)
             {
                 ContentFrame.Navigate(typeof(SettingsPage));

@@ -27,6 +27,13 @@
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Icon="List" Content="Logs système" Tag="logs" />
                 <NavigationViewItem Icon="Help" Content="Aide" Tag="help" />
+
+                <NavigationViewItem Content="À propos" Tag="about">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" />
