@@ -8,7 +8,13 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <NavigationView x:Name="NavView"
+                        Grid.Row="0"
                         Loaded="NavView_Loaded"
                         ItemInvoked="NavView_ItemInvoked"
                         ExpandedModeThresholdWidth="1000"
@@ -21,10 +27,47 @@
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Icon="List" Content="Logs système" Tag="logs" />
                 <NavigationViewItem Icon="Help" Content="Aide" Tag="help" />
-
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="ContentFrame" />
         </NavigationView>
+
+        <Grid Grid.Row="1" 
+              Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" 
+              Padding="12,4" 
+              BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+              BorderThickness="0,1,0,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <DropDownButton Grid.Column="0" VerticalAlignment="Center" Background="Transparent" BorderThickness="0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE749;" FontSize="14" />
+                    <TextBlock x:Name="PrinterStatusText" Text="Imprimante : Non définie" FontSize="12" VerticalAlignment="Center" />
+                </StackPanel>
+                <DropDownButton.Flyout>
+                    <MenuFlyout x:Name="PrinterListMenu" />
+                </DropDownButton.Flyout>
+            </DropDownButton>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+
+                <StackPanel Orientation="Horizontal" Spacing="6" ToolTipService.ToolTip="Statut de la connexion Base de Données">
+                    <FontIcon Glyph="&#xE1D3;" FontSize="12" />
+                    <TextBlock x:Name="DbStatusText" Text="BDD : ..." FontSize="12" Opacity="0.8" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Rectangle Width="1" Height="12" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+
+                <StackPanel Orientation="Horizontal" Spacing="6" ToolTipService.ToolTip="Adresse IP Locale">
+                    <FontIcon Glyph="&#xE839;" FontSize="12" />
+                    <TextBlock x:Name="IpStatusText" Text="IP : ..." FontSize="12" Opacity="0.8" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
