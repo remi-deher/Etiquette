@@ -1,0 +1,53 @@
+<Page
+    x:Class="Etiquette.Views.ChangelogPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Etiquette.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Margin="24" Spacing="20">
+
+            <TextBlock Text="Historique des mises à jour" 
+                       Style="{ThemeResource TitleTextBlockStyle}" 
+                       Margin="0,0,0,10"/>
+
+            <StackPanel Spacing="8" 
+                        Padding="16" 
+                        CornerRadius="8" 
+                        BorderThickness="1" 
+                        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                        Background="{ThemeResource LayerFillColorDefaultBrush}">
+
+                <TextBlock Text="Version 2.0.0.0" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="Soumis le : 22 Décembre 2024" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <StackPanel Margin="0,8,0,0" Spacing="4">
+                    <TextBlock Text="• Mise a jour de l'interface"/>
+                    <TextBlock Text="• Amélioration de l'experience utilisateur"/>
+                    <TextBlock Text="• Mise en place d'un assistant de configuration"/>
+                    <TextBlock Text="• Prise en charge de nouvelle base de données"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="8" 
+                        Padding="16" 
+                        CornerRadius="8" 
+                        BorderThickness="1" 
+                        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                        Background="{ThemeResource LayerFillColorDefaultBrush}">
+
+                <TextBlock Text="Version 1.0.0.0" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="Soumis le : 23 Décembre 2025" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <StackPanel Margin="0,8,0,0" Spacing="4">
+                    <TextBlock Text="• Lancement initial de l'application Etiquette."/>
+                    <TextBlock Text="• Fonctionnalités de base implémentées."/>
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

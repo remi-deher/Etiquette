@@ -19,8 +19,14 @@ namespace Etiquette.Services
             set => LocalSettings.Values["IsFirstRun"] = value;
         }
 
+        // --- GESTION DES VERSIONS (NOUVEAU) ---
+        public static string LastRunVersion
+        {
+            get => LocalSettings.Values["LastRunVersion"] as string ?? "0.0.0.0";
+            set => LocalSettings.Values["LastRunVersion"] = value;
+        }
+
         // --- BASE DE DONNÉES ---
-        // NOUVEAU : Type de base de données
         public static string DbType
         {
             get => LocalSettings.Values["DbType"] as string ?? "MariaDB / MySQL";
