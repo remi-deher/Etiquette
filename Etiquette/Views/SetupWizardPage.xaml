@@ -1,0 +1,172 @@
+<Page
+    x:Class="Etiquette.Views.SetupWizardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{ThemeResource SystemAltHighColor}"/>
+        </Grid.Background>
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="40" MaxWidth="700">
+
+            <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <FontIcon Glyph="&#xE9D5;" FontSize="50" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                <TextBlock Text="Configuration Initiale" Style="{StaticResource TitleTextBlockStyle}" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" CornerRadius="12" Padding="40" MinWidth="500">
+                <Grid>
+                    <StackPanel x:Name="Step1_ModeChoice" Spacing="30" Visibility="Visible">
+                        <TextBlock Text="Utilisez-vous cette application sur un seul ordinateur ?" Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Click="OnGoToMultiPoste" HorizontalAlignment="Stretch" Height="60">
+                                <StackPanel Spacing="5">
+                                    <FontIcon Glyph="&#xE711;" FontSize="20"/>
+                                    <TextBlock Text="NON (Plusieurs postes)"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Click="OnGoToStandalone" HorizontalAlignment="Stretch" Height="60" Style="{StaticResource AccentButtonStyle}">
+                                <StackPanel Spacing="5">
+                                    <FontIcon Glyph="&#xE73E;" FontSize="20"/>
+                                    <TextBlock Text="OUI (Juste ici)"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel x:Name="Step2_RoleChoice" Spacing="30" Visibility="Collapsed">
+                        <TextBlock Text="Existe-t-il DÉJÀ un poste configuré sur le réseau ?" Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="Si vous avez déjà installé le logiciel ailleurs, répondez OUI." Foreground="Gray" HorizontalAlignment="Center"/>
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Click="OnGoToNewServer" HorizontalAlignment="Stretch" Height="60">
+                                <StackPanel Spacing="5">
+                                    <FontIcon Glyph="&#xE711;" FontSize="20"/>
+                                    <TextBlock Text="NON (C'est le premier)"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Click="OnGoToDiscovery" HorizontalAlignment="Stretch" Height="60" Style="{StaticResource AccentButtonStyle}">
+                                <StackPanel Spacing="5">
+                                    <FontIcon Glyph="&#xE73E;" FontSize="20"/>
+                                    <TextBlock Text="OUI (Rejoindre)"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <Button Content="Retour" Click="OnBackToStep1" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel x:Name="Step3_ServerConfig" Spacing="25" Visibility="Collapsed">
+                        <TextBlock Text="Configuration de la Base de Données" Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center"/>
+
+                        <InfoBar Severity="Informational" IsOpen="True" IsClosable="False" 
+                                 Message="Remplissez les champs ci-dessous pour configurer l'accès à votre serveur de base de données."/>
+
+                        <Grid ColumnSpacing="15" RowSpacing="15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox x:Name="TxtServerIp" Grid.Column="0" Header="Adresse IP Serveur" PlaceholderText="ex: 192.168.1.15"/>
+                            <TextBox x:Name="TxtDbName" Grid.Column="1" Header="Nom de la base" Text="labelmaster"/>
+
+                            <TextBox x:Name="TxtUser" Grid.Column="0" Grid.Row="1" Header="Utilisateur" Text="label_user"/>
+                            <PasswordBox x:Name="TxtPassword" Grid.Column="1" Grid.Row="1" Header="Mot de passe"/>
+
+                            <ComboBox x:Name="CmbSslMode" Grid.Row="2" Grid.Column="0" Header="Mode SSL" HorizontalAlignment="Stretch" SelectedIndex="0">
+                                <x:String>None</x:String>
+                                <x:String>Preferred</x:String>
+                                <x:String>Required</x:String>
+                                <x:String>VerifyCA</x:String>
+                                <x:String>VerifyFull</x:String>
+                            </ComboBox>
+
+                            <ComboBox x:Name="CmbDbType" Grid.Row="2" Grid.Column="1" 
+                                      Header="Type de Serveur" HorizontalAlignment="Stretch" SelectedIndex="0"
+                                      SelectionChanged="OnGenerateSql">
+                                <x:String>MariaDB / MySQL</x:String>
+                                <x:String>PostgreSQL</x:String>
+                                <x:String>Microsoft SQL Server</x:String>
+                                <x:String>Oracle</x:String>
+                            </ComboBox>
+                        </Grid>
+
+                        <Border Background="{ThemeResource LayerFillColorAltBrush}" 
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1" CornerRadius="8" Padding="15">
+                            <StackPanel Spacing="10">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <FontIcon Glyph="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource SystemAccentColor}"/>
+                                    <TextBlock Text="Si la base de données n'existe pas encore :" 
+                                               FontWeight="Bold" 
+                                               Foreground="{ThemeResource SystemAccentColor}"
+                                               Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Sélectionnez le type de serveur ci-dessus et cliquez sur le bouton pour générer le script SQL :" 
+                                           Foreground="Gray" FontSize="12"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtSqlOutput" FontFamily="Consolas" Height="80" 
+                                             IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                             Background="{ThemeResource ControlFillColorInputActiveBrush}"
+                                             FontWeight="SemiBold"/>
+
+                                    <Button Grid.Column="1" Click="OnGenerateSql" VerticalAlignment="Stretch" Margin="10,0,0,0" ToolTipService.ToolTip="Générer et Copier">
+                                        <FontIcon Glyph="&#xE8C8;"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <Button Content="Retour" Click="OnBackToStep2"/>
+                            <Button Content="Valider et Terminer" Click="OnValidateServerConfig" Style="{StaticResource AccentButtonStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="Step3_Discovery" Spacing="25" Visibility="Collapsed">
+                        <StackPanel Spacing="10" HorizontalAlignment="Center">
+                            <ProgressRing IsActive="{x:Bind _isSearching, Mode=OneWay}" Width="50" Height="50"/>
+                            <TextBlock Text="{x:Bind _discoveryStatus, Mode=OneWay}" Style="{StaticResource SubtitleTextBlockStyle}" TextAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="PinEntryPanel" Spacing="15" Visibility="Collapsed">
+                            <TextBlock Text="Entrez le code PIN affiché sur le poste déjà configuré :" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                                <TextBox x:Name="TxtPinCode" Width="150" PlaceholderText="Code PIN" FontSize="20" HorizontalContentAlignment="Center"/>
+                                <Button Content="Récupérer la configuration" Click="OnFetchConfig" Style="{StaticResource AccentButtonStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button Content="Annuler / Retour" Click="OnBackToStep2" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+            <ProgressBar x:Name="WizardProgress" Value="0" Maximum="100" Width="200"/>
+        </StackPanel>
+    </Grid>
+</Page>

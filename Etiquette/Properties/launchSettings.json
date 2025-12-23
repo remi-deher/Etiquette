@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Etiquette (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Etiquette (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<Application
+    x:Class="Etiquette.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Etiquette"
+    xmlns:converters="using:Etiquette.Converters">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:StringVisibilityConverter x:Key="StringVisibilityConverter"/>
+            <converters:BoolToLockIconConverter x:Key="BoolToLockIconConverter"/>
+            <converters:BoolToActionTextConverter x:Key="BoolToActionTextConverter"/>
+            <converters:BoolToSeverityConverter x:Key="BoolToSeverityConverter"/>
+
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
