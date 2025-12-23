@@ -22,61 +22,42 @@ namespace Etiquette
             UpdateStatusBar();
         }
 
-        /// <summary>
-        /// Met à jour toutes les informations de la barre de statut (IP, BDD, Imprimante)
-        /// </summary>
         public void UpdateStatusBar()
         {
-            // 1. Mise à jour de l'IP
             IpStatusText.Text = $"IP : {GetLocalIpAddress() ?? "N/A"}";
 
-            // 2. Mise à jour du statut BDD
             bool isLocal = AppSettings.DbServer == "127.0.0.1" || AppSettings.DbServer.ToLower() == "localhost";
             DbStatusText.Text = isLocal ? "BDD : Locale" : $"BDD : Distante ({AppSettings.DbServer})";
-
-            // Mise à jour de la pastille BDD (Vert par défaut si configuré)
             DbStatusDot.Fill = new SolidColorBrush(Microsoft.UI.Colors.Green);
 
-            // 3. Mise à jour du menu imprimante
             UpdatePrinterMenu();
         }
 
-        /// <summary>
-        /// Génère le menu déroulant des imprimantes et met à jour le texte affiché
-        /// </summary>
         private void UpdatePrinterMenu()
         {
             string currentPrinter = AppSettings.PrinterName;
             bool hasPrinter = !string.IsNullOrEmpty(currentPrinter);
 
-            // Texte du bouton
             PrinterStatusText.Text = hasPrinter ? currentPrinter : "Sélectionner imprimante";
-
-            // Couleur de la pastille : Vert si une imprimante est sélectionnée, Rouge sinon
             PrinterStatusDot.Fill = new SolidColorBrush(hasPrinter ? Microsoft.UI.Colors.Green : Microsoft.UI.Colors.Red);
 
             PrinterListMenu.Items.Clear();
 
             try
             {
-                // Tente de lister les imprimantes via System.Drawing
                 foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
                 {
                     var item = new MenuFlyoutItem { Text = printer };
-
-                    // Gestion du clic pour changer l'imprimante
                     item.Click += (s, e) =>
                     {
                         AppSettings.PrinterName = printer;
-                        UpdateStatusBar(); // Rafraîchir l'affichage
+                        UpdateStatusBar();
                     };
 
-                    // Mettre en gras si c'est l'imprimante actuelle
                     if (printer == currentPrinter)
                     {
                         item.FontWeight = Microsoft.UI.Text.FontWeights.Bold;
                     }
-
                     PrinterListMenu.Items.Add(item);
                 }
             }
@@ -88,7 +69,6 @@ namespace Etiquette
             if (PrinterListMenu.Items.Count > 0)
                 PrinterListMenu.Items.Add(new MenuFlyoutSeparator());
 
-            // Bouton pour ouvrir les paramètres Windows
             var windowsSettingsItem = new MenuFlyoutItem
             {
                 Text = "Gérer les imprimantes Windows...",
@@ -141,44 +121,73 @@ namespace Etiquette
                     NavView.SelectedItem = NavView.MenuItems[0];
                     ContentFrame.Navigate(typeof(DashboardPage));
                 }
+
+                // NOUVEAU : Vérification du Changelog
+                CheckForChangelog();
             }
         }
+
+        // --- GESTION DU CHANGELOG ---
+
+        private string GetAppVersion()
+        {
+            var version = Windows.ApplicationModel.Package.Current.Id.Version;
+            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
+
+        private async void CheckForChangelog()
+        {
+            string currentVersion = GetAppVersion();
+            string lastVersion = AppSettings.LastRunVersion;
+
+            // Si c'est une nouvelle version
+            if (currentVersion != lastVersion)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = $"Quoi de neuf dans la version {currentVersion} ?",
+                    Content = new ChangelogPage(),
+                    CloseButtonText = "Fermer",
+                    XamlRoot = this.Content.XamlRoot, // Requis pour WinUI 3
+                    Width = 600
+                };
+
+                await dialog.ShowAsync();
+
+                // On met à jour la version enregistrée
+                AppSettings.LastRunVersion = currentVersion;
+            }
+        }
+
+        // ---------------------------
 
         public void StartWizard()
         {
             AppSettings.IsFirstRun = true;
-
             NavView.IsPaneVisible = false;
             NavView.IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
 
-            // Masque le bouton Paramètres pendant le Wizard
             if (NavView.SettingsItem is NavigationViewItem settingsItem)
             {
                 settingsItem.Visibility = Visibility.Collapsed;
             }
-
             ContentFrame.Navigate(typeof(SetupWizardPage));
         }
 
         public void EndWizard()
         {
             NavView.IsPaneVisible = true;
-
-            // Réaffiche le bouton Paramètres
             if (NavView.SettingsItem is NavigationViewItem settingsItem)
             {
                 settingsItem.Visibility = Visibility.Visible;
             }
-
             NavView.SelectedItem = NavView.MenuItems[0];
             ContentFrame.Navigate(typeof(DashboardPage));
-
             UpdateStatusBar();
         }
 
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            // Gestion du clic sur le bouton Paramètres natif
             if (args.IsSettingsInvoked)
             {
                 ContentFrame.Navigate(typeof(SettingsPage));

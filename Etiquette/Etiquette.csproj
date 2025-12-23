@@ -40,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Views\ChangelogPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
@@ -63,6 +67,12 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.26000" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
     <PackageReference Include="QRCoder" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ChangelogPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
