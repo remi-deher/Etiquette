@@ -35,6 +35,9 @@ namespace Etiquette
             bool isLocal = AppSettings.DbServer == "127.0.0.1" || AppSettings.DbServer.ToLower() == "localhost";
             DbStatusText.Text = isLocal ? "BDD : Locale" : $"BDD : Distante ({AppSettings.DbServer})";
 
+            // Mise à jour de la pastille BDD (Vert par défaut si configuré)
+            DbStatusDot.Fill = new SolidColorBrush(Microsoft.UI.Colors.Green);
+
             // 3. Mise à jour du menu imprimante
             UpdatePrinterMenu();
         }
@@ -45,14 +48,19 @@ namespace Etiquette
         private void UpdatePrinterMenu()
         {
             string currentPrinter = AppSettings.PrinterName;
-            PrinterStatusText.Text = string.IsNullOrEmpty(currentPrinter) ? "Sélectionner imprimante" : currentPrinter;
+            bool hasPrinter = !string.IsNullOrEmpty(currentPrinter);
+
+            // Texte du bouton
+            PrinterStatusText.Text = hasPrinter ? currentPrinter : "Sélectionner imprimante";
+
+            // Couleur de la pastille : Vert si une imprimante est sélectionnée, Rouge sinon
+            PrinterStatusDot.Fill = new SolidColorBrush(hasPrinter ? Microsoft.UI.Colors.Green : Microsoft.UI.Colors.Red);
 
             PrinterListMenu.Items.Clear();
 
             try
             {
-                // Tente de lister les imprimantes via System.Drawing (nécessite System.Drawing.Common)
-                // Si le package n'est pas installé, cela ira dans le catch.
+                // Tente de lister les imprimantes via System.Drawing
                 foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
                 {
                     var item = new MenuFlyoutItem { Text = printer };
@@ -75,17 +83,28 @@ namespace Etiquette
             }
             catch
             {
-                // Fallback si on ne peut pas lister les imprimantes (ex: UWP sandboxed ou package manquant)
+                // Fallback si on ne peut pas lister les imprimantes
                 PrinterListMenu.Items.Add(new MenuFlyoutItem { Text = "Liste indisponible", IsEnabled = false });
             }
 
-            // Option pour désélectionner
+            // Option pour désélectionner ou séparateur
             if (PrinterListMenu.Items.Count > 0)
                 PrinterListMenu.Items.Add(new MenuFlyoutSeparator());
 
-            var settingsItem = new MenuFlyoutItem { Text = "Configurer dans les paramètres..." };
-            settingsItem.Click += (s, e) => ContentFrame.Navigate(typeof(SettingsPage));
-            PrinterListMenu.Items.Add(settingsItem);
+            // Bouton pour ouvrir les paramètres Windows
+            var windowsSettingsItem = new MenuFlyoutItem
+            {
+                Text = "Gérer les imprimantes Windows...",
+                Icon = new FontIcon { Glyph = "\uE713" }
+            };
+
+            windowsSettingsItem.Click += async (s, e) =>
+            {
+                // Ouvre la page "Imprimantes et scanneurs" des paramètres Windows
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:printers"));
+            };
+
+            PrinterListMenu.Items.Add(windowsSettingsItem);
         }
 
         /// <summary>
