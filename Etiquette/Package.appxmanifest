@@ -10,7 +10,7 @@
   <Identity
     Name="DEHERRmi.Etiquettes"
     Publisher="CN=3DCCF712-DEFB-4768-ADCD-828731B0126E"
-    Version="1.0.7.0" />
+    Version="2.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="fddfabfc-57ab-4f66-aebe-3fcbbbe601fc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

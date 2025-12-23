@@ -29,6 +29,10 @@
     <DefaultLanguage>fr-FR</DefaultLanguage>
 
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <RepositoryUrl>https://github.com/remi-deher/Etiquette</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,6 +58,13 @@
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
