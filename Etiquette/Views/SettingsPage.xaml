@@ -14,6 +14,7 @@
             <TextBlock Text="Paramètres" Style="{StaticResource TitleTextBlockStyle}"/>
 
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="24" CornerRadius="8" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE774;" FontFamily="Segoe MDL2 Assets"/>
@@ -132,7 +133,28 @@
                         <TextBlock Text="Impression" Style="{StaticResource SubtitleTextBlockStyle}"/>
                     </StackPanel>
                     <Border Height="1" Background="Gray" Opacity="0.1"/>
-                    <ComboBox Header="Imprimante par défaut" ItemsSource="{x:Bind ViewModel.InstalledPrinters}" SelectedItem="{x:Bind ViewModel.SelectedPrinter, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
+
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="0" 
+                                  Header="Imprimante par défaut" 
+                                  ItemsSource="{x:Bind ViewModel.InstalledPrinters}" 
+                                  SelectedItem="{x:Bind ViewModel.SelectedPrinter, Mode=TwoWay}" 
+                                  HorizontalAlignment="Stretch"/>
+
+                        <Button Grid.Column="1" VerticalAlignment="Bottom" 
+                                Command="{x:Bind ViewModel.OpenPrinterSettingsCommand}"
+                                ToolTipService.ToolTip="Gérer les imprimantes Windows">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE713;" FontFamily="Segoe MDL2 Assets"/>
+                                <TextBlock Text="Gérer"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </StackPanel>
             </Border>
 

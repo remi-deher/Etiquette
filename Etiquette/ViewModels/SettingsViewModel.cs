@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Linq;
+using Windows.System; // Nécessaire pour Launcher
 
 namespace Etiquette.ViewModels
 {
@@ -238,6 +239,13 @@ namespace Etiquette.ViewModels
             }
 
             SqlOutput = sql;
+        }
+
+        // --- NOUVEAU : OUVRIR PARAMÈTRES WINDOWS ---
+        [RelayCommand]
+        public async void OpenPrinterSettings()
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-settings:printers"));
         }
     }
 }
