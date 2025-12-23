@@ -115,15 +115,15 @@
                             <Button Grid.Column="0" Click="OnGoToNewServer" HorizontalAlignment="Stretch" Height="80">
                                 <StackPanel Spacing="5">
                                     <FontIcon Glyph="&#xE968;" FontSize="24"/>
-                                    <TextBlock Text="CONFIGURER ACCÈS"/>
-                                    <TextBlock Text="(Je connais les infos)" FontSize="10" Foreground="Gray"/>
+                                    <TextBlock Text="Nouvelle configuration multi poste"/>
+                                    <TextBlock Text="(Première configuration)" FontSize="10" Foreground="Gray"/>
                                 </StackPanel>
                             </Button>
 
                             <Button Grid.Column="1" Click="OnGoToDiscovery" HorizontalAlignment="Stretch" Height="80" Style="{StaticResource AccentButtonStyle}">
                                 <StackPanel Spacing="5">
                                     <FontIcon Glyph="&#xE8EB;" FontSize="24"/>
-                                    <TextBlock Text="REJOINDRE"/>
+                                    <TextBlock Text="J'ai déja un poste de configuré"/>
                                     <TextBlock Text="(Recherche auto)" FontSize="10" Foreground="White" Opacity="0.8"/>
                                 </StackPanel>
                             </Button>
