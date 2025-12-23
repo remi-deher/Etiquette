@@ -62,7 +62,7 @@
                            FontSize="12"
                            HorizontalAlignment="Center" Foreground="Gray"/>
 
-                <TextBlock Text="© 2024 - Tous droits réservés" 
+                <TextBlock Text="© 2025 - Tous droits réservés" 
                            FontSize="12"
                            HorizontalAlignment="Center" Foreground="Gray"/>
             </StackPanel>
