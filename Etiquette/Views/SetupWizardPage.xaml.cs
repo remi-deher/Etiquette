@@ -2,18 +2,21 @@ using Etiquette.Models;
 using Etiquette.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Drawing.Printing;
 
 namespace Etiquette.Views
 {
     public sealed partial class SetupWizardPage : Page
     {
+        // Service de découverte réseau
         private NetworkDiscoveryService _discoveryService = new NetworkDiscoveryService();
+
+        // Variables pour le Binding (x:Bind) de l'étape de découverte
         private string _discoveryStatus = "Recherche...";
         private bool _isSearching = false;
         private string _foundServerIp = null;
@@ -21,47 +24,166 @@ namespace Etiquette.Views
         public SetupWizardPage()
         {
             this.InitializeComponent();
+
+            // Chargement initial des périphériques
+            LoadPrinters();
+
+            // Démarrage à l'étape 1 (Matériel)
             ShowStep(1);
         }
 
+        // =========================================================
+        // GESTION DU MATÉRIEL (IMPRIMANTE + SCANNER)
+        // =========================================================
+
+        private void LoadPrinters()
+        {
+            try
+            {
+                CmbPrinters.Items.Clear();
+
+                // On récupère les imprimantes installées via System.Drawing
+                foreach (string printer in PrinterSettings.InstalledPrinters)
+                {
+                    CmbPrinters.Items.Add(printer);
+                }
+
+                // Sélection intelligente : on cherche "Zebra", "Label", "Etiquette" ou "Receipt"
+                if (CmbPrinters.Items.Count > 0)
+                {
+                    CmbPrinters.SelectedIndex = 0; // Par défaut le premier
+
+                    foreach (var item in CmbPrinters.Items)
+                    {
+                        string name = item.ToString();
+
+                        // CORRECTION ICI : Ajout du || et ajustement des parenthèses
+                        if (name.Contains("Zebra", StringComparison.OrdinalIgnoreCase) ||
+                            name.Contains("Label", StringComparison.OrdinalIgnoreCase) ||
+                            name.Contains("Etiquette", StringComparison.OrdinalIgnoreCase) ||
+                            name.Contains("Receipt", StringComparison.OrdinalIgnoreCase))
+                        {
+                            CmbPrinters.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Pensez à garder le bloc catch qui fermait votre try initialement
+                CmbPrinters.PlaceholderText = "Impossible de lister les imprimantes";
+            }
+        }
+
+        private void OnOpenWindowsPrinters(object sender, RoutedEventArgs e)
+        {
+            // Ouvre le panneau de configuration Windows
+            _ = Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:printers"));
+        }
+
+        private void OnScanTestInput(object sender, TextChangedEventArgs e)
+        {
+            // Dès que la douchette "écrit" quelque chose dans la zone de texte,
+            // on affiche un feedback visuel vert pour confirmer que ça marche.
+            if (!string.IsNullOrEmpty(TxtScanTest.Text))
+            {
+                IconScanStatus.Visibility = Visibility.Visible;
+                TxtScanFeedback.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                IconScanStatus.Visibility = Visibility.Collapsed;
+                TxtScanFeedback.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        // =========================================================
+        // GESTION DE LA NAVIGATION (WIZARD)
+        // =========================================================
+
         private void ShowStep(int step)
         {
-            Step1_ModeChoice.Visibility = Visibility.Collapsed;
-            Step2_RoleChoice.Visibility = Visibility.Collapsed;
-            Step3_ServerConfig.Visibility = Visibility.Collapsed;
-            Step3_Discovery.Visibility = Visibility.Collapsed;
+            // 1. On masque tout
+            Step1_Hardware.Visibility = Visibility.Collapsed;
+            Step2_ModeChoice.Visibility = Visibility.Collapsed;
+            Step3_RoleChoice.Visibility = Visibility.Collapsed;
+            Step4_ServerConfig.Visibility = Visibility.Collapsed;
+            Step4_Discovery.Visibility = Visibility.Collapsed;
 
+            // 2. On affiche la bonne étape et on met à jour la barre de progression
             switch (step)
             {
-                case 1: Step1_ModeChoice.Visibility = Visibility.Visible; WizardProgress.Value = 10; break;
-                case 2: Step2_RoleChoice.Visibility = Visibility.Visible; WizardProgress.Value = 30; break;
-                case 30:
-                    Step3_ServerConfig.Visibility = Visibility.Visible;
-                    WizardProgress.Value = 60;
-                    // On appelle la génération manuellement une fois que tout est affiché
+                case 1: // Matériel
+                    Step1_Hardware.Visibility = Visibility.Visible;
+                    WizardProgress.Value = 15;
+                    break;
+
+                case 2: // Choix Mode (Solo vs Réseau)
+                    Step2_ModeChoice.Visibility = Visibility.Visible;
+                    WizardProgress.Value = 35;
+                    break;
+
+                case 3: // Choix Rôle (Serveur vs Client)
+                    Step3_RoleChoice.Visibility = Visibility.Visible;
+                    WizardProgress.Value = 55;
+                    break;
+
+                case 40: // Config Manuelle (Serveur)
+                    Step4_ServerConfig.Visibility = Visibility.Visible;
+                    WizardProgress.Value = 85;
+                    // On pré-génère le SQL pour aider l'utilisateur
                     OnGenerateSql(null, null);
                     break;
-                case 31:
-                    Step3_Discovery.Visibility = Visibility.Visible;
-                    WizardProgress.Value = 60;
+
+                case 41: // Découverte Auto (Client)
+                    Step4_Discovery.Visibility = Visibility.Visible;
+                    WizardProgress.Value = 85;
                     if (PinEntryPanel != null) PinEntryPanel.Visibility = Visibility.Collapsed;
                     StartDiscovery();
                     break;
             }
         }
 
-        // --- HANDLERS NAVIGATION ---
-        private void OnGoToStandalone(object s, RoutedEventArgs e) => FinishSetup("Standalone", "127.0.0.1", "labelmaster", "root", "", "None", "MariaDB / MySQL");
+        // --- HANDLERS DES BOUTONS ---
 
-        private void OnGoToMultiPoste(object s, RoutedEventArgs e) => ShowStep(2);
-        private void OnGoToNewServer(object s, RoutedEventArgs e) => ShowStep(30);
-        private void OnGoToDiscovery(object s, RoutedEventArgs e) => ShowStep(31);
+        // Validation étape 1 -> Passage étape 2
+        private void OnHardwareValidated(object sender, RoutedEventArgs e)
+        {
+            // On sauvegarde l'imprimante tout de suite
+            if (CmbPrinters.SelectedItem != null)
+            {
+                AppSettings.PrinterName = CmbPrinters.SelectedItem.ToString();
+            }
+            ShowStep(2);
+        }
+
+        // Navigation Étape 2 (Mode)
+        private void OnGoToStandalone(object s, RoutedEventArgs e)
+        {
+            // Mode Solo : On configure une DB locale par défaut (ex: localhost) et on termine.
+            FinishSetup("Standalone", "127.0.0.1", "labelmaster", "root", "", "None", "MariaDB / MySQL");
+        }
+
+        private void OnGoToMultiPoste(object s, RoutedEventArgs e) => ShowStep(3);
+
+        // Navigation Étape 3 (Rôle)
+        private void OnGoToNewServer(object s, RoutedEventArgs e) => ShowStep(40); // Config manuelle
+        private void OnGoToDiscovery(object s, RoutedEventArgs e) => ShowStep(41); // Recherche auto
+
+        // Navigation Retour
         private void OnBackToStep1(object s, RoutedEventArgs e) => ShowStep(1);
         private void OnBackToStep2(object s, RoutedEventArgs e) => ShowStep(2);
+        private void OnBackToStep3(object s, RoutedEventArgs e) => ShowStep(3);
 
-        // --- VALIDATION SERVEUR ---
+
+        // =========================================================
+        // CONFIGURATION SERVEUR & SQL
+        // =========================================================
+
         private void OnValidateServerConfig(object s, RoutedEventArgs e)
         {
+            // Validation manuelle de la config serveur
             FinishSetup(
                 "MultiPoste",
                 TxtServerIp.Text,
@@ -73,11 +195,9 @@ namespace Etiquette.Views
             );
         }
 
-        // --- GÉNÉRATION SQL (CORRIGÉE) ---
         private void OnGenerateSql(object s, RoutedEventArgs e)
         {
-            // IMPORTANT : Cette ligne empêche le crash au démarrage.
-            // On vérifie que TOUS les contrôles utilisés existent avant de continuer.
+            // Vérification que les contrôles sont chargés
             if (TxtDbName == null || TxtUser == null || TxtPassword == null || CmbDbType == null || TxtSqlOutput == null)
                 return;
 
@@ -88,7 +208,7 @@ namespace Etiquette.Views
 
             if (string.IsNullOrWhiteSpace(dbName) || string.IsNullOrWhiteSpace(user))
             {
-                TxtSqlOutput.Text = "-- Remplissez les champs Nom et Utilisateur pour générer le script.";
+                TxtSqlOutput.Text = "-- Remplissez les champs Nom et Utilisateur pour voir le script.";
                 return;
             }
 
@@ -127,7 +247,11 @@ namespace Etiquette.Views
             TxtSqlOutput.Text = sql;
         }
 
-        // --- DISCOVERY & PAIRING ---
+
+        // =========================================================
+        // DÉCOUVERTE RÉSEAU (DISCOVERY)
+        // =========================================================
+
         private async void StartDiscovery()
         {
             _isSearching = true;
@@ -136,12 +260,13 @@ namespace Etiquette.Views
 
             try
             {
+                // On cherche via UDP Broadcast
                 string serverIp = await _discoveryService.SearchForServerAsync(timeoutMs: 4000);
 
                 if (!string.IsNullOrEmpty(serverIp))
                 {
                     _foundServerIp = serverIp;
-                    _discoveryStatus = $"Serveur trouvé ({serverIp}). Tentative de connexion sécurisée...";
+                    _discoveryStatus = $"Serveur trouvé ({serverIp}). Tentative de connexion...";
                     Bindings.Update();
                     await TrySecurePairing(serverIp);
                 }
@@ -159,6 +284,14 @@ namespace Etiquette.Views
             Bindings.Update();
         }
 
+        private void OnFetchConfig(object sender, RoutedEventArgs e)
+        {
+            // Bouton cliqué après avoir entré le PIN (si nécessaire)
+            // On relance la logique qui inclura l'envoi du PIN si implémenté, 
+            // ou on recommence simplement la découverte.
+            StartDiscovery();
+        }
+
         private async Task TrySecurePairing(string ip)
         {
             string url = $"http://{ip}:54322/pair";
@@ -167,16 +300,22 @@ namespace Etiquette.Views
                 using (var crypto = new CryptoService())
                 using (var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) })
                 {
+                    // Échange de clés
                     byte[] myPublicKey = crypto.GetPublicKey();
                     var content = new ByteArrayContent(myPublicKey);
                     var response = await client.PostAsync(url, content);
 
+                    // Si le serveur demande un PIN (Forbidden 403)
                     if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
                     {
-                        _discoveryStatus = "Serveur trouvé, mais mode 'Appairage' inactif.";
+                        _discoveryStatus = "Serveur trouvé. Veuillez entrer le code PIN du serveur.";
+                        PinEntryPanel.Visibility = Visibility.Visible;
                         return;
                     }
+
                     response.EnsureSuccessStatusCode();
+
+                    // Déchiffrement de la réponse
                     byte[] responseData = await response.Content.ReadAsByteArrayAsync();
 
                     using (var ms = new MemoryStream(responseData))
@@ -195,13 +334,14 @@ namespace Etiquette.Views
 
                             if (config != null)
                             {
+                                // Succès : on applique la config reçue
                                 FinishSetup("MultiPoste", config.DbServer, config.DbName, config.DbUser, config.DbPassword, "None", "MariaDB / MySQL");
                                 return;
                             }
                         }
                     }
                 }
-                _discoveryStatus = "Erreur : Échec du déchiffrement.";
+                _discoveryStatus = "Erreur : Échec du déchiffrement des données.";
             }
             catch (Exception ex)
             {
@@ -209,10 +349,16 @@ namespace Etiquette.Views
             }
         }
 
-        // --- FIN SETUP ---
+
+        // =========================================================
+        // FINALISATION
+        // =========================================================
+
         private void FinishSetup(string mode, string ip, string db, string user, string pass, string sslMode, string dbType)
         {
             WizardProgress.Value = 100;
+
+            // Enregistrement dans les préférences globales
             AppSettings.AppMode = mode;
             if (!string.IsNullOrEmpty(ip)) AppSettings.DbServer = ip;
             if (!string.IsNullOrEmpty(db)) AppSettings.DbName = db;
@@ -220,12 +366,16 @@ namespace Etiquette.Views
             if (!string.IsNullOrEmpty(pass)) AppSettings.DbPassword = pass;
             AppSettings.DbSslMode = sslMode;
             AppSettings.DbType = dbType;
+
+            // Marquer le wizard comme terminé
             AppSettings.IsFirstRun = false;
 
+            // Fermer le wizard via la fenêtre principale
             var mainWindow = (Application.Current as App)?.m_window as MainWindow;
-            if (mainWindow != null) mainWindow.EndWizard();
+            if (mainWindow != null)
+            {
+                mainWindow.EndWizard();
+            }
         }
-
-        private void OnFetchConfig(object sender, RoutedEventArgs e) => StartDiscovery();
     }
 }
