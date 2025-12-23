@@ -1,55 +1,66 @@
-# Impression d'étiquette
+# 🏷️ Etiquette
 
-<img width="1283" height="746" alt="image" src="https://github.com/user-attachments/assets/c63a7142-cec5-4a34-90ee-ed17eda855a1" />
+> Solution moderne d'impression d'étiquettes et de gestion de codes pour points de vente (POS).
 
-<img width="1283" height="746" alt="image" src="https://github.com/user-attachments/assets/6c740299-c973-4038-914d-77d224aea13c" />
+[![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Télécharger-blue?logo=microsoft&logoColor=white)](https://apps.microsoft.com/detail/9PDMT6H4VCZX)
+![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-blue?logo=windows)
+![Framework](https://img.shields.io/badge/Framework-WinUI%203-purple?logo=dotnet)
+![License](https://img.shields.io/badge/License-MIT-green)
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c63a7142-cec5-4a34-90ee-ed17eda855a1" alt="Dashboard Screenshot" width="800"/>
+</div>
 
 ## 📖 À propos
 
-Application pour imprimer des étiquettes sur POS
+**Etiquettes** est une application conçue pour simplifier la génération et l'impression d'étiquettes en environnement commercial. Développée avec les dernières technologies Windows (WinUI 3), elle assure une fiabilité maximale grâce à sa gestion intelligente des bases de données.
 
-## ✨ Fonctionnalités principales
+## ✨ Fonctionnalités Clés
 
-* Génération et impression de QR Code
-* Historique des codes générés
-* A VENIR : Application pour Android pour envoyer en file d'attente des codes (pour terminal d'inventaire)
-* 🎨 **Interface moderne :** Conçue pour Windows 10 et 11.
-* Compatible avec les bases de donnée MySQL
-* Fallback sur SQLite en cas de deconnexion avec le serveur et gestions des conflits
+### 🖨️ Impression & Gestion
+* **Génération de QR Codes & Code-barres** instantanée.
+* **Historique complet** des codes générés et imprimés.
+* **Files d'attente** : Gestion des impressions en attente.
 
-## 📥 Comment installer l'application
+### 🛡️ Fiabilité & Réseau
+* **Mode Hybride (Offline First)** : Fonctionne principalement avec une base de données MySQL, mais bascule automatiquement sur une base locale **SQLite** en cas de coupure réseau. Les données sont resynchronisées au retour de la connexion.
+* **Découverte Réseau (Auto-Discovery)** : Utilise le protocole UDP pour détecter automatiquement les instances serveur sur le réseau local sans configuration complexe d'IP.
+* **Appairage Sécurisé** : Système d'échange de configuration chiffré pour connecter de nouveaux terminaux facilement.
 
-L'application est fournie au format `.msix`.
+### 🎨 Expérience Utilisateur
+* Interface **Fluent Design** moderne (Windows 11).
+* Compatible **Thème Sombre / Clair**.
 
-1.  Rendez-vous sur la page **[Releases](../../releases)** de ce dépôt.
-2.  Téléchargez le dernier fichier portant l'extension `.msix`.
+## 🚀 Installation
 
-### ⚠️ Important : Première installation (Certificat)
+### Via le Microsoft Store
+Les mises à jour sont automatiques et l'installation est sécurisée.
 
-Windows peut demander une vérification manuelle du certificat lors de la première installation si le certificat n'a pas été propagé.
+* **Lien Web :** [https://apps.microsoft.com/detail/9PDMT6H4VCZX](https://apps.microsoft.com/detail/9PDMT6H4VCZX)
+* **Lien Direct (Ouvrir le Store) :** `ms-windows-store://pdp/?productid=9PDMT6H4VCZX`
 
-**Si vous obtenez une erreur à l'ouverture, suivez ces étapes (à faire une seule fois) :**
 
-1.  Faites un **clic-droit** sur le fichier `.msix` téléchargé et choisissez **Propriétés**.
-2.  Allez dans l'onglet **Signatures numériques**, sélectionnez la signature dans la liste et cliquez sur **Détails**.
-3.  Cliquez sur **Afficher le certificat** puis sur **Installer un certificat**.
-4.  Sélectionnez **Ordinateur local** (Local Machine) et faites Suivant.
-5.  Cochez **"Placer tous les certificats dans le magasin suivant"**.
-6.  Cliquez sur **Parcourir...** et sélectionnez **"Autorités de certification racines de confiance"** (Trusted Root Certification Authorities).
-7.  Validez par **OK**, puis **Suivant** et **Terminer**.
+## 🛠️ Architecture & Technologies
 
-Une fois ceci fait, vous pouvez double-cliquer sur le fichier `.msix` pour l'installer normalement ! 🎉
+Ce projet est construit sur des bases solides pour garantir maintenabilité et performance :
 
-## 🛠 Technologies utilisées
+* **Langage :** C# / .NET 10
+* **Interface :** WinUI 3 (Windows App SDK)
+* **Architecture :** MVVM (Model-View-ViewModel)
+* **Données :** Entity Framework Core (MySQL + SQLite)
+* **Réseau :**
+    * `UdpClient` pour la découverte de services (Broadcast).
+    * `HttpListener` pour l'API locale de configuration.
+    * Chiffrement asymétrique pour l'échange de clés.
 
-* **Langage :** C# / .NET
-* **Framework :** WinUI 3
-* **IDE :** Visual Studio 2026
+## 🔮 Roadmap
+
+* [ ] Application compagnon **Android** pour terminaux d'inventaire (envoi de codes vers la file d'attente).
 
 ## 🤝 Contribuer
 
-N'hésitez pas à ouvrir une "Issue" si vous trouvez un bug ou si vous avez une idée d'amélioration.
+Les contributions sont les bienvenues !
+Si vous trouvez un bug ou souhaitez proposer une fonctionnalité, n'hésitez pas à ouvrir une **Issue**.
 
 ## 📄 Licence
 
