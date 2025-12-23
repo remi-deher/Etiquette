@@ -255,7 +255,7 @@ namespace Etiquette.Views
         private async void StartDiscovery()
         {
             _isSearching = true;
-            _discoveryStatus = "Recherche d'un serveur sur le réseau...";
+            _discoveryStatus = "Recherche d'un poste configuré sur le réseau...";
             Bindings.Update();
 
             try
