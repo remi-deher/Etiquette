@@ -100,11 +100,15 @@
 
                     <StackPanel x:Name="Step3_RoleChoice" Spacing="30" Visibility="Collapsed">
                         <TextBlock Text="Configuration Réseau" 
-                                   Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
+               Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" TextAlignment="Center"/>
 
                         <InfoBar Severity="Warning" IsOpen="True" IsClosable="False"
-                                 Title="Important"
-                                 Message="Une base de données partagée (MySQL, PostgreSQL, Oracle ou Microsoft SQL Server) est nécessaire pour ce mode."/>
+             Title="Important"
+             Message="Une base de données partagée (MySQL, PostgreSQL, Oracle ou Microsoft SQL Server) est nécessaire pour ce mode."/>
+
+                        <InfoBar Severity="Informational" IsOpen="True" IsClosable="False"
+             Title="Connexion à un poste existant"
+             Message="Pour récupérer la configuration automatiquement, activez d'abord l'option 'Ajout de nouveaux postes' dans les paramètres du poste"/>
 
                         <Grid ColumnSpacing="20">
                             <Grid.ColumnDefinitions>
