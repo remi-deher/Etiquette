@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/c63a7142-cec5-4a34-90ee-ed17eda855a1" alt="Dashboard Screenshot" width="800"/>
+<img width="1906" height="746" alt="image" src="https://github.com/user-attachments/assets/571eae64-29d0-4c0e-9275-5cf5bbc2f4bd" />
 </div>
 
 ## 📖 À propos
